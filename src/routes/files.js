@@ -14,17 +14,19 @@ function files(app) {
   });
 
   router.post("/", (req, res) => {
+    let promise;
     const bb = busboy({ headers: req.headers });
     bb.on("file", (name, file, info) => {
       const { filename, encoding, mimeType } = info;
       console.log("Filename:", filename);
       console.log("Encoding:", encoding);
-      console.log("MimeType", mimeType);
-      file.resume();
+      console.log("MimeType:", mimeType);
+      promise = fileServ.upload(file);
     });
 
-    bb.on("close", () => {
-      res.json({message:"Uploading a File..."});
+    bb.on("close", async () => {
+      const result = await promise;
+      res.json(result);
     });
 
     req.pipe(bb);

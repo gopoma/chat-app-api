@@ -22,7 +22,8 @@ const config = {
   callbackURLDev: process.env.CALLBACK_URL_DEVELOPMENT,
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
   cloudinaryAPIKey: process.env.CLOUDINARY_API_KEY,
-  cloudinaryAPISecret: process.env.CLOUDINARY_API_SECRET
+  cloudinaryAPISecret: process.env.CLOUDINARY_API_SECRET,
+  cloudinaryFolderName: process.env.CLOUDINARY_FOLDER_NAME
 };
 
 module.exports = config;
