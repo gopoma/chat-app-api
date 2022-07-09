@@ -1,4 +1,7 @@
-const {uploadFile} = require("../libs/storage");
+const {
+  uploadFile,
+  deleteFile
+} = require("../libs/storage");
 
 class FileService {
   async upload(file) {
@@ -7,14 +10,29 @@ class FileService {
       return {
         success: true,
         message: "File uploaded successfully",
-        public_id: result.public_id,
-        secure_url: result.secure_url
+        key: result.public_id.split("/")[1],
+        location: result.secure_url
       };
     } catch(error) {
       console.log(error);
       return {
         success: false,
         message: "A wild error has appeared"
+      };
+    }
+  }
+
+  async delete(fileName) {
+    try {
+      await deleteFile(fileName);
+      return {
+        success: true,
+        message: "File deleted successfully"
+      };
+    } catch(error) {
+      return {
+        success: false,
+        message: error.message
       };
     }
   }

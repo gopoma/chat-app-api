@@ -27,6 +27,18 @@ function uploadFile(file) {
   });
 }
 
+async function deleteFile(fileName) {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.destroy(`${cloudinaryFolderName}/${fileName}`, (error, result) => {
+      if(error) {
+        return reject(error);
+      } 
+      return result.result === "not found" ? reject({message:result.result}) : resolve(result);
+    });
+  });
+}
+
 module.exports = {
-  uploadFile
+  uploadFile,
+  deleteFile
 };

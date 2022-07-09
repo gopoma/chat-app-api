@@ -33,7 +33,10 @@ function files(app) {
   });
 
   router.delete("/:fileName", async (req, res) => {
-    return res.json({message:"Deleting a File..."});
+    const {fileName} = req.params;
+    const result = await fileServ.delete(fileName);
+
+    greturn res.status(result.success ? 202 : 400).json(result);
   });
 }
 
