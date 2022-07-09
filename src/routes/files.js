@@ -36,7 +36,7 @@ function files(app) {
     const {fileName} = req.params;
     const result = await fileServ.delete(fileName);
 
-    greturn res.status(result.success ? 202 : 400).json(result);
+    return res.status(result.success ? 202 : 400).json(result);
   });
 }
 
