@@ -9,10 +9,6 @@ function files(app) {
 
 
 
-  router.get("/:fileName", async (req, res) => {
-    return res.json({message:"Sending a File..."});
-  });
-
   router.post("/", (req, res) => {
     let promise;
     const bb = busboy({ headers: req.headers });
@@ -30,6 +26,13 @@ function files(app) {
     });
 
     req.pipe(bb);
+  });
+
+  router.get("/:fileName", async (req, res) => {
+    const {fileName} = req.params;
+    const result = await fileServ.download(fileName);
+
+    return res.json(result);
   });
 
   router.delete("/:fileName", async (req, res) => {

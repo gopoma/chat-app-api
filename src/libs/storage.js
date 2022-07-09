@@ -5,6 +5,7 @@ const {
   cloudinaryAPISecret,
   cloudinaryFolderName
 } = require("../config");
+require("isomorphic-fetch");
 
 cloudinary.config({
   cloud_name: cloudinaryCloudName,
@@ -27,9 +28,24 @@ function uploadFile(file) {
   });
 }
 
+function downloadFile(fileName) {
+  return new Promise((resolve, reject) => {
+    const resourcePublicID = `${cloudinaryFolderName}/${fileName}`;
+    console.log(resourcePublicID);
+    cloudinary.api.resources_by_ids(resourcePublicID, (error, result) => {
+      if(error) {
+        return reject(error);
+      }
+      console.log(result);
+      return resolve("OK");
+    });
+  });
+}
+
 async function deleteFile(fileName) {
   return new Promise((resolve, reject) => {
-    cloudinary.uploader.destroy(`${cloudinaryFolderName}/${fileName}`, (error, result) => {
+    const resourcePublicID = `${cloudinaryFolderName}/${fileName}`;
+    cloudinary.uploader.destroy(resourcePublicID, (error, result) => {
       if(error) {
         return reject(error);
       } 
@@ -40,5 +56,6 @@ async function deleteFile(fileName) {
 
 module.exports = {
   uploadFile,
+  downloadFile,
   deleteFile
 };
