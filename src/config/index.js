@@ -19,7 +19,10 @@ const config = {
   githubClientID: process.env.GITHUB_CLIENT_ID,
   githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
   callbackURL: process.env.CALLBACK_URL,
-  callbackURLDev: process.env.CALLBACK_URL_DEVELOPMENT
+  callbackURLDev: process.env.CALLBACK_URL_DEVELOPMENT,
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
+  cloudinaryAPIKey: process.env.CLOUDINARY_API_KEY,
+  cloudinaryAPISecret: process.env.CLOUDINARY_API_SECRET
 };
 
 module.exports = config;

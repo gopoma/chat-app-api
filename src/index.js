@@ -10,6 +10,7 @@ const passport = require("passport");
 // Importando routes:
 const auth = require("./routes/auth");
 const users = require("./routes/users");
+const files = require("./routes/files");
 
 // Importando Estrategias
 const {
@@ -52,6 +53,7 @@ passport.deserializeUser((user, done) => {
 // Utilizando las rutas:
 auth(app);
 users(app);
+files(app);
 
 app.get("/", (req, res) => {
   return res.json({message:"chat-app-api"});
