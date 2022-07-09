@@ -1,6 +1,7 @@
 const express = require("express");
 const FileService = require("../services/files");
 const busboy = require("busboy");
+const { downloadFile } = require("../libs/storage");
 
 function files(app) {
   const router = express.Router();
@@ -30,9 +31,8 @@ function files(app) {
 
   router.get("/:fileName", async (req, res) => {
     const {fileName} = req.params;
-    const result = await fileServ.download(fileName);
 
-    return res.json(result);
+    downloadFile(fileName, res);
   });
 
   router.delete("/:fileName", async (req, res) => {

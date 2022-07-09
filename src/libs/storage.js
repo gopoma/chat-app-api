@@ -5,7 +5,7 @@ const {
   cloudinaryAPISecret,
   cloudinaryFolderName
 } = require("../config");
-require("isomorphic-fetch");
+const https = require("https");
 
 cloudinary.config({
   cloud_name: cloudinaryCloudName,
@@ -28,18 +28,45 @@ function uploadFile(file) {
   });
 }
 
-function downloadFile(fileName) {
+function getResourceURL(fileName) {
   return new Promise((resolve, reject) => {
     const resourcePublicID = `${cloudinaryFolderName}/${fileName}`;
-    console.log(resourcePublicID);
     cloudinary.api.resources_by_ids(resourcePublicID, (error, result) => {
       if(error) {
         return reject(error);
       }
-      console.log(result);
-      return resolve("OK");
+
+      const resourceURL = result.resources[0]?.secure_url;
+      if(!resourceURL) {
+        return reject({message:"Resource not Found"});
+      }
+      return resolve(resourceURL);
     });
   });
+}
+
+function getResourceStream(resourceURL) {
+  return new Promise((resolve, reject) => {
+    https.get(resourceURL, function(response) {
+      if(response.statusCode === 200) {
+        return resolve(response);
+      }
+      return reject({message:"Resource not Found"});
+    });
+  });
+}
+
+async function downloadFile(fileName, res) {
+  try {
+    const resourceURL = await getResourceURL(fileName);
+    const resourceStream = await getResourceStream(resourceURL);
+    resourceStream.pipe(res);
+  } catch(error) {
+    return res.status(400).json({
+      success:false,
+      message:error.message
+    });
+  }
 }
 
 async function deleteFile(fileName) {
