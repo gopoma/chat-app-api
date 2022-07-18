@@ -9,15 +9,14 @@ function chat(server, app) {
   const chatService = new ChatService(io);
 
   app.use("/api/chats", router);
-  app.use("/api/chats", authValidation);
 
-  router.get("/", async (req, res) => {
+  router.get("/", authValidation(1), async (req, res) => {
     const idUser = req.user.id;
     const result = await chatService.getMyChats(idUser);
     return res.json(result);
   });
 
-  router.post("/:idUser", async (req, res) => {
+  router.post("/:idUser", authValidation(1), async (req, res) => {
     const idUserOne = req.user.id;
     const idUserTwo = req.params.idUser;
 

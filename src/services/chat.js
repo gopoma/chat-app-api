@@ -1,5 +1,4 @@
 let activeUsers = [];
-const messages = [];
 const ChatModel = require("../models/chat");
 const cookie = require("cookie");
 const AuthService = require("./auth");
@@ -62,6 +61,36 @@ class ChatService {
         io.to(socket.id).emit("messageSended", chat);
       });
     });
+  }
+
+  async getMyChats(idUser) {
+    const chats = await ChatModel.find({
+      $or:[
+        {idUserOne:idUser},
+        {idUserTwo:idUser}
+      ]
+    });
+    return chats;
+  }
+
+  async create(idUserOne, idUserTwo) {
+    const chat = await ChatModel.create({
+      idUserOne,
+      idUserTwo
+    });
+    return chat;
+  }
+
+  async sendMessage(idChat, idSender, content) {
+    const chat = await ChatModel.findByIdAndUpdate(idChat, {
+      $push: {
+        messages: {
+          idSender,
+          content,
+        }
+      }
+    });
+    return chat;
   }
 }
 

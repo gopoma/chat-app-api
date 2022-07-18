@@ -10,7 +10,10 @@ const messageSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  isFile: Boolean
+  isFile: {
+    type: Boolean,
+    default: false
+  }
 }, {timestamps: true});
 
 const chatSchema = new mongoose.Schema({
