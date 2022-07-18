@@ -24,6 +24,7 @@ class ChatService {
         }
 
         const user = AuthService.validate(token);
+        console.log(user);
         activeUsers.push({
           idUser: user.id,
           idSocket: socket.id
@@ -49,7 +50,10 @@ class ChatService {
         const chat = await this.sendMessage(socket.idChat, socket.idUser, content);
 
         const {idUserOne, idUserTwo} = chat;
-        const receiverID = socket.idUser === idUserOne ? idUserTwo.toString() : idUserOne.toString();
+        console.log("idUserOne:", idUserOne);
+        console.log("idUserTwo:", idUserTwo);
+        const receiverID = socket.idUser === idUserOne.toString() ? idUserTwo.toString() : idUserOne.toString();
+        console.log(receiverID);
         const receiverConnected = activeUsers.find(activeUser => activeUser.idUser === receiverID);
 
         if(receiverConnected) {

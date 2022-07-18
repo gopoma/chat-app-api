@@ -1,4 +1,4 @@
-const {production} = require("../config");
+// const {production} = require("../config");
 
 function authResponse(res, result, statusCode) {
   if(result.success) {
@@ -6,7 +6,7 @@ function authResponse(res, result, statusCode) {
 
     return res.cookie("token", token, {
       httpOnly: true,
-      secure: production, // Solo disponible a través de https*
+      secure: true, // || production, // Solo disponible a través de https*
       sameSite: "none",
       expires: new Date(new Date().setDate(new Date().getDate() + 7))
     }).json(data);
