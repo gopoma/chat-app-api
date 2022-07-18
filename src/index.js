@@ -5,6 +5,8 @@ const cors = require("cors");
 const cookies = require("cookie-parser");
 const {port, sessionSecret} = require("./config");
 const {connection} = require("./config/db");
+const socketConnection = require("./libs/socket");
+const ChatService = require("./services/chat.js");
 const passport = require("passport");
 
 // Importando routes:
@@ -59,6 +61,8 @@ app.get("/", (req, res) => {
   return res.json({message:"chat-app-api"});
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Listening on: http://localhost:${port}`);
 });
+const io = socketConnection(server);
+new ChatService(io);
