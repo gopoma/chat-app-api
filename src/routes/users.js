@@ -1,12 +1,16 @@
 const express = require("express");
 const authValidation = require("../middleware/auth");
+const UserService = require("../services/users");
 
 function users(app) {
   const router = express.Router();
+  const userService = new UserService();
+
   app.use("/api/users", router);
 
-  router.get("/", authValidation(1), (req, res) => {
-    return res.json({success:true});
+  router.get("/", authValidation(1), async (req, res) => {
+    const result = await userService.getAll();
+    return res.json(result);
   });
 }
 
