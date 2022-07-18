@@ -12,8 +12,9 @@ class ChatService {
 
       socket.on("userConnected", () => {
         const cookies = socket.handshake.headers.cookie;
-        const {token} = cookie.parse(cookies);
+        if(!cookies) {return;}
 
+        const {token} = cookie.parse(cookies);
         if(!token) {return;}
 
         const user = AuthService.validate(token);
