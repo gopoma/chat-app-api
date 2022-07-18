@@ -6,7 +6,10 @@ const messageSchema = new mongoose.Schema({
     ref: "user"
   },
   content: String,
-  read: Boolean,
+  read: {
+    type: Boolean,
+    default: false
+  },
   isFile: Boolean
 }, {timestamps: true});
 

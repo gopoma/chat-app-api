@@ -22,6 +22,9 @@ const {
 } = require("./middleware/authProvider");
 
 const app = express();
+const server = app.listen(port, () => {
+  console.log(`Listening on: http://localhost:${port}`);
+});
 connection();
 
 // Utilizando middleware
@@ -55,12 +58,8 @@ passport.deserializeUser((user, done) => {
 auth(app);
 users(app);
 files(app);
+chat(server, app);
 
 app.get("/", (req, res) => {
   return res.json({message:"chat-app-api"});
 });
-
-const server = app.listen(port, () => {
-  console.log(`Listening on: http://localhost:${port}`);
-});
-chat(server);
