@@ -13,10 +13,16 @@ class ChatService {
 
       socket.on("userConnected", () => {
         const cookies = socket.handshake.headers.cookie;
-        if(!cookies) {return;}
+        if(!cookies) {
+          console.log("No Cookies provided");
+          return;
+        }
 
         const {token} = cookie.parse(cookies);
-        if(!token) {return;}
+        if(!token) {
+          console.log("No Token provided");
+          return;
+        }
 
         const user = AuthService.validate(token);
         activeUsers.push({
@@ -40,18 +46,20 @@ class ChatService {
         io.to(socket.id).emit("messages", messages);
       });
 
-      socket.on("sendMessage", (receptorSocketId, message) => {
-        console.log("Sending message...");
-        socket.to(receptorSocketId).emit("messageReceived", {
-          senderSocketId: socket.id,
-          senderId: socket.idUser,
-          message
-        });
-        io.to(socket.id).emit("messageSended", {
-          senderSocketId: socket.id,
-          senderId: socket.idUser,
-          message
-        });
+      socket.on("sendMessage", async content => {
+        const chat = await this.sendMessage(socket.idChat, socket.idUser, content);
+
+        const {idUserOne, idUserTwo} = chat;
+        const receiverID = socket.idUser === idUserOne ? idUserTwo.toString() : idUserOne.toString();
+        const receiverConnected = activeUsers.find(activeUser => activeUser.idUser === receiverID);
+
+        if(receiverConnected) {
+          socket.to(receiverConnected.idSocket).emit("messageReceived", {
+            senderID: socket.idUser,
+            content
+          });
+        }
+        io.to(socket.id).emit("messageSended", chat);
       });
     });
   }
