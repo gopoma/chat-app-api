@@ -5,14 +5,13 @@ const cors = require("cors");
 const cookies = require("cookie-parser");
 const {port, sessionSecret} = require("./config");
 const {connection} = require("./config/db");
-const socketConnection = require("./libs/socket");
-const ChatService = require("./services/chat.js");
 const passport = require("passport");
 
 // Importando routes:
 const auth = require("./routes/auth");
 const users = require("./routes/users");
 const files = require("./routes/files");
+const chat = require("./routes/chat");
 
 // Importando Estrategias
 const {
@@ -64,5 +63,4 @@ app.get("/", (req, res) => {
 const server = app.listen(port, () => {
   console.log(`Listening on: http://localhost:${port}`);
 });
-const io = socketConnection(server);
-new ChatService(io);
+chat(server);
