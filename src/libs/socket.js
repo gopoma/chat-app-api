@@ -6,7 +6,8 @@ function connection(server) {
       origin: ["http://127.0.0.1:5500"],
       methods: ["GET", "POST"],
       credentials: true
-    }
+    },
+    cookie: true
   });
 
   console.log("Socket is ready to take our messages");

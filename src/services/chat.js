@@ -1,5 +1,7 @@
 let activeUsers = [];
 const messages = [];
+const cookie = require("cookie");
+const AuthService = require("./auth");
 
 class ChatService {
   constructor(io) {
@@ -8,12 +10,19 @@ class ChatService {
     io.on("connection", socket => {
       // console.log("A wild client has appeared!:", socket.id);
 
-      socket.on("userConnected", idUser => {
+      socket.on("userConnected", () => {
+        const cookies = socket.handshake.headers.cookie;
+        const {token} = cookie.parse(cookies);
+
+        if(!token) {return;}
+
+        const user = AuthService.validate(token);
+        console.log(user);
         activeUsers.push({
-          idUser,
-          idSocket:socket.id
+          idUser: user.id,
+          idSocket: socket.id
         });
-        socket.idUser = idUser;
+        socket.idUser = user.id;
 
         io.emit("userConnected", activeUsers);
       });
