@@ -17,17 +17,17 @@ const messageSchema = new mongoose.Schema({
 }, {timestamps: true});
 
 const chatSchema = new mongoose.Schema({
-  idUserOne: {
+  userOne: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user"
   },
-  idUserTwo: {
+  userTwo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user"
   },
   messages: [messageSchema]
 });
 
-const ChatModel = mongoose.model("message", chatSchema);
+const ChatModel = mongoose.model("chat", chatSchema);
 
 module.exports = ChatModel;
