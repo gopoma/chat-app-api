@@ -67,7 +67,8 @@ class AuthService {
       email: user.email,
       provider: user.provider,
       idProvider: user.idProvider,
-      role: user.role
+      role: user.role,
+      profilePic: user.profilePic
     };
 
     const token = this.#createToken(userWithNoSensitiveData);

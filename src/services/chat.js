@@ -30,6 +30,8 @@ class ChatService {
           idSocket: socket.id
         });
         socket.idUser = user.id;
+        socket.userName = user.name;
+        socket.userProfilePic = user.profilePic;
 
         io.emit("userConnected", activeUsers);
       });
@@ -59,8 +61,10 @@ class ChatService {
         const receiverConnected = activeUsers.find(activeUser => activeUser.idUser === receiverID);
 
         if(receiverConnected) {
-          socket.to(receiverConnected.idSocket).emit("messageReceived", {
+          io.to(receiverConnected.idSocket).emit("messageReceived", {
             senderID: socket.idUser,
+            senderName: socket.userName,
+            senderProfilePic: socket.userProfilePic,
             content
           });
         }
