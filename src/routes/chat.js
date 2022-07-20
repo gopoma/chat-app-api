@@ -20,7 +20,7 @@ function chat(server, app) {
     const idUserOne = req.user.id;
     const idUserTwo = req.params.idUser;
 
-    const result = await chatService.create(idUserOne, idUserTwo);
+    const result = await chatService.getOrCreate(idUserOne, idUserTwo);
     return res.json(result);
   });
 }

@@ -77,12 +77,27 @@ class ChatService {
     return chats;
   }
 
-  async create(idUserOne, idUserTwo) {
-    const chat = await ChatModel.create({
-      userOne:idUserOne,
-      userTwo:idUserTwo
+  async getOrCreate(idUserOne, idUserTwo) {
+    const chatAlreadyThere = await ChatModel.find({
+      $or: [
+        {
+          userOne: idUserOne,
+          userTwo: idUserTwo
+        }, {
+          userOne: idUserTwo,
+          userTwo: idUserOne
+        }
+      ]
     });
-    return chat;
+
+    if(!chatAlreadyThere) {
+      const chatCreated = await ChatModel.create({
+        userOne: idUserOne,
+        userTwo: idUserTwo
+      });
+      return chatCreated;
+    }
+    return chatAlreadyThere;
   }
 
   async sendMessage(idChat, idSender, content) {
