@@ -73,7 +73,7 @@ class ChatService {
         {userOne:idUser},
         {userTwo:idUser}
       ]
-    }).populate("userOne", "name").populate("userTwo", "name");
+    }).populate("userOne", "name profilePic").populate("userTwo", "name profilePic");
     return chats;
   }
 
