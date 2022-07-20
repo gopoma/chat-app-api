@@ -75,6 +75,21 @@ class UserService {
       return dbError(error);
     }
   }
+
+  async search(queryFilters) {
+    let {name} = queryFilters;
+    [name] = [name?.trim()];
+
+    let queryBody = {};
+    if(name) {
+      queryBody = {
+        ...queryBody,
+        name: {"$regex": name, "$options": "i"}
+      };
+    }
+
+    return await UserModel.find(queryBody, "name profilePic");
+  }
 }
 
 module.exports = UserService;

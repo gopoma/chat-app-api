@@ -9,8 +9,12 @@ function users(app) {
   app.use("/api/users", router);
 
   router.get("/", authValidation(1), async (req, res) => {
-    console.log(req.user);
     const result = await userService.getAll();
+    return res.json(result);
+  });
+
+  router.get("/search", async (req, res) => {
+    const result = await userService.search(req.query);
     return res.json(result);
   });
 }
