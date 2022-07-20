@@ -70,8 +70,8 @@ class ChatService {
   async getMyChats(idUser) {
     const chats = await ChatModel.find({
       $or:[
-        {idUserOne:idUser},
-        {idUserTwo:idUser}
+        {userOne:idUser},
+        {userTwo:idUser}
       ]
     }).populate("userOne", "name").populate("userTwo", "name");
     return chats;
@@ -79,8 +79,8 @@ class ChatService {
 
   async create(idUserOne, idUserTwo) {
     const chat = await ChatModel.create({
-      idUserOne,
-      idUserTwo
+      userOne:idUserOne,
+      userTwo:idUserTwo
     });
     return chat;
   }
