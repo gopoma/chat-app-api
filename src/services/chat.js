@@ -78,7 +78,7 @@ class ChatService {
   }
 
   async getOrCreate(idUserOne, idUserTwo) {
-    const chatAlreadyThere = await ChatModel.find({
+    const chatAlreadyThere = await ChatModel.findOne({
       $or: [
         {
           userOne: idUserOne,
