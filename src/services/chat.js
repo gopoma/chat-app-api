@@ -79,7 +79,7 @@ class ChatService {
         {userOne:idUser},
         {userTwo:idUser}
       ]
-    }).populate("userOne", "name profilePic").populate("userTwo", "name profilePic");
+    }).sort({updatedAt:-1}).populate("userOne", "name profilePic").populate("userTwo", "name profilePic");
     return chats;
   }
 
