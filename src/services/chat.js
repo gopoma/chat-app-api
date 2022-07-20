@@ -43,16 +43,18 @@ class ChatService {
       socket.on("beginChat", async idChat => {
         socket.idChat = idChat;
         const messages = await ChatModel.findById(idChat);
+        console.log(socket.idChat);
         io.to(socket.id).emit("messages", messages);
       });
 
       socket.on("sendMessage", async content => {
+        console.log("Debugging:", socket.idChat, socket.idUser, content);
         const chat = await this.sendMessage(socket.idChat, socket.idUser, content);
 
-        const {idUserOne, idUserTwo} = chat;
-        console.log("idUserOne:", idUserOne);
-        console.log("idUserTwo:", idUserTwo);
-        const receiverID = socket.idUser === idUserOne.toString() ? idUserTwo.toString() : idUserOne.toString();
+        const {userOne, userTwo} = chat;
+        console.log("idUserOne:", userOne);
+        console.log("idUserTwo:", userTwo);
+        const receiverID = socket.idUser === userOne.toString() ? userTwo.toString() : userOne.toString();
         console.log(receiverID);
         const receiverConnected = activeUsers.find(activeUser => activeUser.idUser === receiverID);
 
@@ -88,14 +90,14 @@ class ChatService {
           userTwo: idUserOne
         }
       ]
-    });
+    }).populate("userOne", "name profilePic").populate("userTwo", "name profilePic");
 
     if(!chatAlreadyThere) {
       const chatCreated = await ChatModel.create({
         userOne: idUserOne,
         userTwo: idUserTwo
       });
-      return chatCreated;
+      return await ChatModel.findById(chatCreated.id).populate("userOne", "name profilePic").populate("userTwo", "name profilePic");
     }
     return chatAlreadyThere;
   }
@@ -108,7 +110,7 @@ class ChatService {
           content,
         }
       }
-    });
+    }, {new:true});
     return chat;
   }
 }
