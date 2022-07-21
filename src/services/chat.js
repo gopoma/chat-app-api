@@ -24,7 +24,6 @@ class ChatService {
         }
 
         const user = AuthService.validate(token);
-        console.log(user);
         activeUsers.push({
           idUser: user.id,
           idSocket: socket.id
@@ -37,7 +36,6 @@ class ChatService {
       });
 
       socket.on("disconnect", () => {
-        console.log("Someone has disconnected");
         activeUsers = activeUsers.filter(activeUser => activeUser.idSocket !== socket.id);
         io.emit("userDisconnected", activeUsers);
       });
@@ -45,19 +43,14 @@ class ChatService {
       socket.on("beginChat", async idChat => {
         socket.idChat = idChat;
         const messages = await ChatModel.findById(idChat);
-        console.log(socket.idChat);
         io.to(socket.id).emit("messages", messages);
       });
 
       socket.on("sendMessage", async content => {
-        console.log("Debugging:", socket.idChat, socket.idUser, content);
         const chat = await this.sendMessage(socket.idChat, socket.idUser, content);
 
         const {userOne, userTwo} = chat;
-        console.log("idUserOne:", userOne);
-        console.log("idUserTwo:", userTwo);
         const receiverID = socket.idUser === userOne.toString() ? userTwo.toString() : userOne.toString();
-        console.log(receiverID);
         const receiverConnected = activeUsers.find(activeUser => activeUser.idUser === receiverID);
 
         if(receiverConnected) {
@@ -70,7 +63,20 @@ class ChatService {
         }
         io.to(socket.id).emit("messageSended", chat);
       });
+
+      socket.on("readChat", async idChat => {
+        await this.makeChatAsReaded(idChat);
+        io.to(socket.id).emit("readChat");
+      });
     });
+  }
+
+  async makeChatAsReaded(idChat) {
+    const chat = await ChatModel.findById(idChat);
+    if(chat.messages.length !== 0) {
+      chat.messages[chat.messages.length - 1].read = true;
+    }
+    chat.save();
   }
 
   async getMyChats(idUser) {
