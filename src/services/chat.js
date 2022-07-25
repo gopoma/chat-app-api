@@ -62,6 +62,7 @@ class ChatService {
             senderID: socket.idUser,
             senderName: socket.userName,
             senderProfilePic: socket.userProfilePic,
+            chat,
             content
           });
         }
