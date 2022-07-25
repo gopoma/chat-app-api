@@ -50,8 +50,8 @@ class ChatService {
         io.to(socket.id).emit("messages", messages);
       });
 
-      socket.on("sendMessage", async content => {
-        const chat = await this.sendMessage(socket.idChat, socket.idUser, content);
+      socket.on("sendMessage", async (content, isFile) => {
+        const chat = await this.sendMessage(socket.idChat, socket.idUser, content, isFile);
 
         const {userOne, userTwo} = chat;
         const receiverID = socket.idUser === userOne.toString() ? userTwo.toString() : userOne.toString();
@@ -126,12 +126,13 @@ class ChatService {
     return chatAlreadyThere;
   }
 
-  async sendMessage(idChat, idSender, content) {
+  async sendMessage(idChat, idSender, content, isFile) {
     const chat = await ChatModel.findByIdAndUpdate(idChat, {
       $push: {
         messages: {
           idSender,
           content,
+          isFile
         }
       }
     }, {new:true});
