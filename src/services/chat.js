@@ -35,7 +35,11 @@ class ChatService {
         io.emit("userConnected", activeUsers);
       });
 
-      socket.on("disconnect", () => {
+      socket.on("disconnect", async () => {
+        // Deleting Empty Chats
+        await this.deleteEmptyChats(socket.idUser);
+
+        // Deleting Current User from ActiveUsers
         activeUsers = activeUsers.filter(activeUser => activeUser.idSocket !== socket.id);
         io.emit("userDisconnected", activeUsers);
       });
@@ -68,6 +72,16 @@ class ChatService {
         await this.makeChatAsReaded(idChat);
         io.to(socket.id).emit("readChat");
       });
+    });
+  }
+
+  async deleteEmptyChats(idUser) {
+    await ChatModel.deleteMany({
+      $or: [
+        {userOne: idUser},
+        {userTwo: idUser}
+      ],
+      messages: []
     });
   }
 
