@@ -76,6 +76,17 @@ class ChatService {
 
       socket.on("deleteMessage", async idMessage => {
         const chat = await this.deleteMessage(socket.idChat, idMessage);
+        const {userOne, userTwo} = chat;
+        const receiverID = socket.idUser === userOne.toString() ? userTwo.toString() : userOne.toString();
+        const receiverConnected = activeUsers.find(activeUser => activeUser.idUser === receiverID);
+
+        if(receiverConnected) {
+          socket.to(receiverConnected.idSocket).emit("messageDeletedNotification", {
+            senderID: socket.idUser,
+            chat
+          });
+        }
+
         io.to(socket.id).emit("messageDeleted", chat);
       });
     });
