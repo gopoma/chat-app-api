@@ -73,7 +73,22 @@ class ChatService {
         await this.makeChatAsReaded(idChat);
         io.to(socket.id).emit("readChat");
       });
+
+      socket.on("deleteMessage", async idMessage => {
+        console.log("idChat:", socket.idChat);
+        console.log("idMessage:", idMessage);
+        await this.deleteMessage(socket.idChat, idMessage);
+      });
     });
+  }
+
+  async deleteMessage(idChat, idMessage) {
+    const chat = await ChatModel.findOneAndUpdate({_id:idChat, "messages._id": idMessage}, {
+      $set: {
+        "messages.$.isDeleted": true
+      }
+    }, {new:true});
+    return chat;
   }
 
   async deleteEmptyChats(idUser) {

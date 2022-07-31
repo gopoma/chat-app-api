@@ -13,6 +13,10 @@ const messageSchema = new mongoose.Schema({
   isFile: {
     type: Boolean,
     default: false
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
   }
 }, {timestamps: true});
 
