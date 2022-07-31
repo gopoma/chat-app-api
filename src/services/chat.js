@@ -75,9 +75,8 @@ class ChatService {
       });
 
       socket.on("deleteMessage", async idMessage => {
-        console.log("idChat:", socket.idChat);
-        console.log("idMessage:", idMessage);
-        await this.deleteMessage(socket.idChat, idMessage);
+        const chat = await this.deleteMessage(socket.idChat, idMessage);
+        io.to(socket.id).emit("messageDeleted", chat);
       });
     });
   }
