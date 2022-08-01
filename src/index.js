@@ -32,7 +32,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookies());
 app.use(cors({
-  origin:["http://127.0.0.1:5500", "https://cube-ecommerce-frontend.vercel.app"],
+  origin:["http://127.0.0.1:5500", "https://messenger-boy.vercel.app"],
   credentials: true
 }));
 app.use(session({

@@ -1,4 +1,4 @@
-// const {production} = require("../config");
+const {production} = require("../config");
 
 function authResponse(res, result, statusCode) {
   if(result.success) {
@@ -24,7 +24,7 @@ function providerResponse(res, result, statusCode) {
       secure: true, // || production, // Solo disponible a través de https*
       sameSite: "none",
       expires: new Date(new Date().setDate(new Date().getDate() + 7))
-    }).redirect("http://127.0.0.1:5500/frontend/index.html");
+    }).redirect(production ? "https://messenger-boy.vercel.app" : "http://127.0.0.1:5500/frontend/index.html");
   }
 
   return res.status(statusCode).json(result);
