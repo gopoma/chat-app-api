@@ -89,11 +89,36 @@ class ChatService {
 
         io.to(socket.id).emit("messageDeleted", chat);
       });
+
+      socket.on("editMessage", async (idMessage, content) => {
+        const chat = await this.editMessage(socket.idChat, idMessage, content);
+        const {userOne, userTwo} = chat;
+        const receiverID = socket.idUser === userOne.toString() ? userTwo.toString() : userOne.toString();
+        const receiverConnected = activeUsers.find(activeUser => activeUser.idUser === receiverID);
+
+        if(receiverConnected) {
+          socket.to(receiverConnected.idSocket).emit("messageDeletedNotification", {
+            senderID: socket.idUser,
+            chat
+          });
+        }
+
+        io.to(socket.id).emit("messageEdited", chat);
+      });
     });
   }
 
+  async editMessage(idChat, idMessage, content) {
+    const chat = await ChatModel.findOneAndUpdate({_id:idChat, "messages._id":idMessage}, {
+      $set: {
+        "messages.$.content": content
+      }
+    }, {new:true});
+    return chat;
+  }
+
   async deleteMessage(idChat, idMessage) {
-    const chat = await ChatModel.findOneAndUpdate({_id:idChat, "messages._id": idMessage}, {
+    const chat = await ChatModel.findOneAndUpdate({_id:idChat, "messages._id":idMessage}, {
       $set: {
         "messages.$.isDeleted": true
       }
