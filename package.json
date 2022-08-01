@@ -15,6 +15,9 @@
   "keywords": [],
   "author": "gopoma",
   "license": "MIT",
+  "engines": {
+    "node": "16.13.2"
+  },
   "bugs": {
     "url": "https://github.com/gopoma/chat-app-api/issues"
   },
